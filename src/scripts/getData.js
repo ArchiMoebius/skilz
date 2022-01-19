@@ -42,8 +42,7 @@ program
         'build',
         'dist',
       ];
-      const excludeFile = `--exclude-list-file=${__dirname.replace('scripts', 'data')}/clocExclusions.txt`;
-      const cmd = `/usr/bin/cloc ${excludeFile} --fullpath --not-match-d='(${excludeBase.join('|')})' --json ./`;
+      const cmd = `/usr/bin/cloc --fullpath --not-match-d='(${excludeBase.join('|')})' --json ./`;
 
       let codeStat = false;
 
@@ -84,10 +83,16 @@ program
                 files: languageStat.nFiles,
                 lines: languageStat.code,
               };
-              languages['total'][language] = {
-                files: languageStat.nFiles,
-                lines: languageStat.code,
-              };
+
+              if (_.isUndefined(languages['total'][language])) {
+                languages['total'][language] = {
+                  files: languageStat.nFiles,
+                  lines: languageStat.code,
+                };
+              } else {
+                languages['total'][language]["files"] += languageStat.nFiles;
+                languages['total'][language]["lines"] += languageStat.code;
+              }
 
               if(_.isUndefined(projects[language])) {
                 projects[language] = [];
@@ -143,7 +148,14 @@ program
         }
 
         try {
-          let authors = execSync('git shortlog -sn master', {cwd: dir}).toString().split('\n');
+          let authors = [];
+
+          try {
+            authors = execSync(`git shortlog -sn ${skilzInfo.branch}`, {cwd: dir}).toString().split('\n');
+          } catch(e) {
+            console.error(`Unable to process ${dir}`);
+            process.exit(-1);
+          }
 
           authors = _.filter(_.map(authors, (author) => {
             return author.replace(/.*\t/, '');
@@ -179,11 +191,20 @@ program
             let deletedFileCount = Number(execSync(`git log --author="${author}" --pretty=tformat: --numstat --follow -p ./ | grep "deleted file" | wc -l`, {cwd: dir}).toString());
             let createdFileCount = Number(execSync(`git log --author="${author}" --pretty=tformat: --follow -p ./ | grep 'new file mode' | wc -l`, {cwd: dir}).toString());
 
+            let commitCount = 0;
+
+            try {
+              commitCount = execSync(`git rev-list --count ${skilzInfo.branch} --author "${author}"`, {cwd: dir}).toString().replace(/\n/, '').replace(/\s+/, '');
+            } catch(e) {
+              console.error(`Unable to get commit count for ${dir}`);
+              process.exit(-2);
+            }
+
             skilzInfo.gitstats[author] = {
               firstCommitDate: execSync(`git log --pretty=format:"%ci" --reverse --author "${author}" | head -n 1`, {cwd: dir}).toString().replace(/\n/, ''),
               lastCommitDate: execSync(`git log --pretty=format:"%ci" --author "${author}" | head -n 1`, {cwd: dir}).toString().replace(/\n/, ''),
               daysOfWork: Number(execSync(`git log --author="${author}" | grep "^Date" | awk '{print $2 " "  $3 " " $4}' | uniq | wc -l`, {cwd: dir}).toString().replace(/\n/, '')),
-              commitCount: Number(execSync(`git rev-list --count master --author "${author}"`, {cwd: dir}).toString().replace(/\n/, '').replace(/\s+/, '')),
+              commitCount: Number(commitCount),
               numstatFile: {
                 added: createdFileCount,
                 removed: deletedFileCount,

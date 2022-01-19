@@ -16,7 +16,6 @@ const plugins = [
     filename: 'index.html',
     publicPath: '/',
   }),
-  new webpack.HotModuleReplacementPlugin(),
 ];
 
 if (!production) {
@@ -26,7 +25,20 @@ if (!production) {
 module.exports = {
   mode: production ? 'production' : 'development',
   devServer: {
+    host: '127.0.0.1',
+    https: false,
     hot: true,
+    historyApiFallback: false,
+    compress: true,
+    port: 8080,
+    open: '/',
+    static: {
+      directory: path.resolve(__dirname, 'dist'),
+    },
+    client: {
+      progress: true,
+      overlay: true,
+    }
   },
   entry: './src/index.js',
   output: {

@@ -1,18 +1,11 @@
 {
+	"branch": "master",
   "description": "A web application to vizualize git based projects and their code stats as reported by CLOC.",
   "title": "Skilz",
   "links": [
     {
-      "title": "Download",
-      "href": "https://github.com/poerhiza/skilz/releases"
-    },
-    {
       "title": "View Source",
-      "href": "https://github.com/poerhiza/skilz"
-    },
-    {
-      "title": "Read More",
-      "href": ""
+      "href": "https://github.com/ArchiMoebius/skilz/"
     }
   ]
 }
