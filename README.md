@@ -34,7 +34,7 @@ The on for this repo looks like:
 ```bash
 # node ./src/scripts/getData.js <repo1path> ... <repoNpath>
 # Example, for the site above the following command was invoked
-node ./src/scripts/getData.js ../acceptum ../arduino-remote-temperature ../breakout-clone ../cadre ../canicve.com ../charon ../enigma ../f4.9 ../fsort ../isocrypt ../janus ../joiner ../mailpipe ../mailpipe-gui ../mkdocs-canicve-plugin ../montage ../packet-maze ../rootme ../services ../skilz ../textsafe
+node ./src/scripts/getData.js ../acceptum ../arduino-remote-temperature ../breakout-clone ../cadre ../canicve.com ../charon ../enigma ../f4.9 ../fsort ../isocrypt ../janus ../joiner ../mailpipe ../mailpipe-gui ../mkdocs-canicve-plugin ../montage ../packet-maze ../rootme ../services ../skilz ../textsafe ../oneword/ ../bae ../../11.01_Games/BarClick/ ../zippy/
 ```
 
 3) Review it
