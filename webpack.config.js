@@ -13,6 +13,7 @@ const plugins = [
     hash: false,
     minify: true,
     filename: 'index.html',
+    title: 'Skilz',
     publicPath: '/',
   }),
 ];
